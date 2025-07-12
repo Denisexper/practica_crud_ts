@@ -6,6 +6,10 @@ import { ModelProducts } from "./models/Products"
 import { ProductsControllerService } from "./controllers/Procuts.controllers.service"
 import { ProductsRoutes } from "./routes/Product.routes"
 import cors from "cors"
+import { ShoesRepository } from "./repositories/ShoeRepository"
+import { ModelShoes } from "./models/Model.Shoes"
+import { ShoesControllerService } from "./controllers/Shoes.controller.service"
+import { ShoesRoutes } from "./routes/Shoes.routes"
 
 class server {
 
@@ -41,10 +45,20 @@ class server {
 
         const routes = new ProductsRoutes(controller, Router())
 
+        //shoes services
+        const shoesRepo = new ShoesRepository(ModelShoes)
+
+        const shoesContro = new ShoesControllerService(shoesRepo)
+
+        const shoesRouter = new ShoesRoutes(shoesContro, Router())
+
         this.server.use(cors())
         this.server.use(json())
 
         this.server.use("/api", routes.initRoutes())
+
+        //shoes services
+        this.server.use("/api", shoesRouter.initRoutes())
 
 
     }
